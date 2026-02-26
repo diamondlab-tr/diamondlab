@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diamond Könüç | Executive Global Intelligence</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -81,6 +82,20 @@
 
         .chart-container { position: relative; height: 220px; width: 100%; display: flex; align-items: center; justify-content: center; }
         .chart-label-center { position: absolute; font-weight: 900; color: var(--success); font-size: 14px; text-align: center; pointer-events: none; z-index: 5; }
+
+        .analiz-layout { display: grid; grid-template-columns: 1fr 400px; gap: 30px; }
+
+        /* MOBİL UYUMLULUK KODLARI - BURAYI EKLEDİM */
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            .analiz-layout { grid-template-columns: 1fr; }
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .top-bar { flex-direction: column; gap: 15px; text-align: center; }
+            .rate-group-wrapper { align-items: center; }
+            .rate-group { flex-wrap: wrap; justify-content: center; }
+            body { padding: 10px; }
+            .logo-big { font-size: 30px; }
+        }
     </style>
 </head>
 <body onload="initSystem()">
@@ -150,7 +165,7 @@
             </div>
 
             <div class="card" style="margin-bottom: 25px;">
-                <div style="display: grid; grid-template-columns: 1fr 400px; gap: 30px;">
+                <div class="analiz-layout">
                     <div>
                         <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
                             <h3 style="font-size:16px; font-weight:800;">🎛️ ANALİZ MERKEZİ</h3>
@@ -161,11 +176,11 @@
                                 <option value="etsy">Etsy Global (%10)</option>
                             </select>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom:15px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom:15px;">
                             <div><label>ALIŞ MALİYETİ</label><div style="display:flex;"><select id="bCur" style="width:70px;"><option value="USD">$</option><option value="EUR">€</option><option value="TRY">₺</option><option value="CAD">C$</option></select><input type="number" id="buy" value="100"></div></div>
                             <div><label>SATIŞ FİYATI</label><div style="display:flex;"><select id="sCur" style="width:70px;"><option value="USD">$</option><option value="EUR">€</option><option value="TRY">₺</option><option value="CAD">C$</option></select><input type="number" id="sell" value="250"></div></div>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 15px;">
                             <div><label>LOJİSTİK</label><div style="display:flex;"><select id="shCur" style="width:60px;"><option value="USD">$</option><option value="TRY">₺</option><option value="CAD">C$</option></select><input type="number" id="ship" value="20"></div></div>
                             <div><label>KOMİSYON %</label><input type="number" id="com" value="15"></div>
                             <div><label>VERGİ %</label><input type="number" id="vat" value="0"></div>
@@ -173,7 +188,7 @@
                         <button class="btn btn-primary" style="margin-top:25px;" onclick="calculate(true, true)">HESAPLA VE SİSTEME İŞLE</button>
                     </div>
 
-                    <div style="text-align: center; border-left: 1px solid #334155; padding-left: 30px;">
+                    <div style="text-align: center; border-left: 1px solid #334155; padding-top: 20px;">
                         <div class="chart-container">
                             <canvas id="myChart"></canvas>
                             <div class="chart-label-center" id="chartMidText">VİZYON<br>ANALİZ</div>
@@ -186,9 +201,11 @@
 
             <div class="card">
                 <h3 style="margin-bottom:15px; font-size:14px;">📜 SON İŞLEMLER</h3>
-                <table class="ceo-table">
-                    <tbody id="ceoHistory"></tbody>
-                </table>
+                <div style="overflow-x: auto;">
+                    <table class="ceo-table">
+                        <tbody id="ceoHistory"></tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
@@ -248,10 +265,12 @@
     function updateRateUI(id, value, tagId) {
         const input = document.getElementById(id);
         const tag = document.getElementById(tagId);
-        input.value = value;
-        tag.classList.remove('live-glow');
-        void tag.offsetWidth; 
-        tag.classList.add('live-glow');
+        if(input) input.value = value;
+        if(tag) {
+            tag.classList.remove('live-glow');
+            void tag.offsetWidth; 
+            tag.classList.add('live-glow');
+        }
     }
 
     function toTL(val, cur) {
